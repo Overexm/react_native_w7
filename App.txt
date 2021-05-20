@@ -1,0 +1,185 @@
+import React , {Component} from 'react';
+import { Text, View, ScrollView,Dimensions, StyleSheet } from 'react-native';
+import Constants from 'expo-constants';
+import Header from './components/uikit/Header';
+import ImageCard from './components/uikit/ImageCard';
+import{h,w} from './constants';
+import Layout from './components/uikit/Layout';
+
+const url ='https://gist.githubusercontent.com/Overexm/2e602c690de92ce4cbcc2710d6f5e01a/raw/2ab1dd0b1e8b9f1b29253d1ff816eef984caa8d5/data.json'
+export default class HomeScreen extends Component {
+  state={
+    title: 'Kazakhstan Travel',
+    data: [ ]
+  }
+
+  
+
+componentDidMount = async() =>{
+  try{ 
+    const response= await fetch(url)
+  const data= await response.json()
+  this.setState({data})
+ }catch (e){
+   throw e
+ }
+ 
+}
+  render (){
+    const{title, data}= this.state
+   const {container}= styles
+    return(
+      <View>
+   <Header title={title} />
+   <ScrollView>
+    <Layout>
+  {
+    data.map (item =>(
+      <ImageCard  data={item} key= {item.id} />
+    )) 
+  }
+  </Layout>
+  </ScrollView>
+   </View>
+    )
+  }
+}
+
+
+const styles=StyleSheet.create({
+  container:{
+    marginTop: 20,
+    flexDirection:'row',
+    flexWrap: 'wrap',
+    flexShrink: 2,
+    justifyContent: 'space-around',
+    marginLeft: 3,
+    marginBottom:10,
+    
+  }
+})
+
+//Header
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
+ 
+const Header = props =>{
+  const {viewStyle,textStyle} =styles
+  console.log(props)
+  return (
+    <View style={styles.viewStyle}>
+    <Text style={styles.textStyle}>{props.title} </Text> 
+    </View>
+  )
+}
+
+const styles = StyleSheet.create({
+  viewStyle:{
+    backgroundColor:'#30d0fe',
+    height: 50,
+    justifyContent: 'center',
+    paddingLeft: 22,
+    paddingTop: 10,
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height:2},
+    shadowOpacity: 0.2,
+    elevation:2,
+    position: 'relative'
+
+  },
+  textStyle:{
+    color: '#fff',
+    fontSize:28,
+    fontFamily: 'AvenirNext-DemiBold'
+  }
+})
+
+export default Header;
+
+//ImageCard
+
+import React from 'react';
+import {View, Text, Image,StyleSheet, TouchableOpacity} from 'react-native';
+import{h,w} from '../../constants';
+
+const ImageCard =({data, onPress}) =>{
+  const{container,sub,h1, cover }=styles
+
+  const{image, name}=data
+  
+  
+  return(
+    <TouchableOpacity onPress={onPress}>
+    <View  style={container}>
+    <View  style={sub}>
+    <Image style={cover} source={{uri: image}} />
+    </View>
+    <Text  style={h1}> {name.toUpperCase()}</Text>
+    </View>
+    </TouchableOpacity>
+  )
+}
+
+
+const styles= StyleSheet.create({
+container:{
+width: w/2.4,
+paddingVertical:10
+},
+sub:{
+  shadowColor: '#000',
+  borderRadius:10,
+  shadowRadius: 8,
+  shadowOffset: {width: 0, height:3},
+  shadowOpacity: 0.2,
+  backgroundColor:' white'
+},
+h1:{
+    paddingTop:10,
+    fontFamily:'AvenirNext-DemiBold',
+    fontSize: 18,
+    alignSelf: 'center',
+    textAlign: 'center',
+    width: w/2.4,
+},
+
+cover:{
+  width: w/2.4,
+  height: w * 0.40,
+  borderRadius: 10,
+},
+
+
+})
+
+export default ImageCard;
+
+//Layout
+import React from 'react';
+import {View, StyleSheet, ScrollView} from 'react-native';
+
+const Layout = props =>{
+  const{container}=styles
+  return (
+    <ScrollView>
+    <View style={container}> 
+    {props.children}
+    </View>
+    </ScrollView>
+  )
+}
+
+const styles=StyleSheet.create({
+container:{
+    marginTop: 30,
+    flexDirection:'row',
+    flexWrap: 'wrap',
+    flexShrink: 2,
+    justifyContent: 'space-around',
+    marginLeft: 3,
+    marginBottom:150,
+    
+  }
+})
+
+export default Layout
